@@ -27,13 +27,11 @@ jobs:
         arch:
           - x64
     steps:
-      - name: Check OpenGL
+      - if: matrix.os == 'ubuntu-latest'
+        name: OpenGL/GLFW
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update
-            sudo apt-get upgrade
-            sudo apt-get install -y cmake xorg-dev mesa-utils xvfb libgl1 freeglut3-dev
-          fi
+            sudo apt-get install -y xorg-dev mesa-utils xvfb libgl1 freeglut3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
