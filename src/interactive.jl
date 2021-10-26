@@ -6,13 +6,13 @@
 Interactive 2D slice of 3D `var` in `normal` direction.
 """
 function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
-   dir =
+   dir, str1, str2 =
       if normal == :x
-         1
+         1, "y", "z"
       elseif normal == :y
-         2
+         2, "x", "z"
       else
-         3
+         3, "x", "y"
       end
 
    unitx = axisunit == RE ? " [Re]" : " [m]"
@@ -27,8 +27,8 @@ function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
 
    fig = Figure()
    ax = Axis(fig[1, 1], aspect=DataAspect())
-   ax.xlabel = String(normal)*unitx
-   ax.ylabel = String(normal)*unitx
+   ax.xlabel = str1*unitx
+   ax.ylabel = str2*unitx
 
    lsgrid = labelslidergrid!(
       fig,
