@@ -178,7 +178,7 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
    ax.xlabel = "vx [m/s]"
    ax.ylabel = "vy [m/s]"
    ax.zlabel = "vz [m/s]"
-   #TODO: wait for https://github.com/JuliaPlots/Makie.jl/pull/1404   
+   #TODO: wait for https://github.com/JuliaPlots/Makie.jl/pull/1404
    plt = meshscatter!(ax, Vselect, color=log10.(fselect),
       marker=Rect3f(Vec3f(0), Vec3f(4*vmesh.dv[1])),
       colormap=cmap_alpha,

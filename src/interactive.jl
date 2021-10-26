@@ -6,7 +6,7 @@
 Interactive 2D slice of 3D `var` in `normal` direction.
 """
 function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
-   dir = 
+   dir =
       if normal == :x
          1
       elseif normal == :y
@@ -58,7 +58,7 @@ end
 """
     vdfslices(meta, location; species="proton", unit=SI, verbose=false)
 
-Three orthogonal slices of VDFs from `meta` at `location`.    
+Three orthogonal slices of VDFs from `meta` at `location`.
 """
 function vdfslices(meta, location; species="proton", unit=SI, verbose=false)
    ncells = meta.ncells

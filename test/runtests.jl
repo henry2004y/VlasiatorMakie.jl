@@ -21,7 +21,7 @@ using GLMakie
 
    fig, ax, plt = heatmap(meta2, var)
    @test plt isa Heatmap
-  
+
    fig = vlslice(meta3, var)
    @test fig isa Figure
 
