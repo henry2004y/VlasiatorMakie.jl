@@ -61,7 +61,6 @@ end
 Three orthogonal slices of VDFs from `meta` at `location`.
 """
 function vdfslices(meta, location; species="proton", unit=SI, verbose=false)
-   ncells = meta.ncells
    if haskey(meta.meshes, species)
       vmesh = meta.meshes[species]
    else
@@ -86,9 +85,9 @@ function vdfslices(meta, location; species="proton", unit=SI, verbose=false)
       end
    end
 
-   vcellids, vcellf = readvcells(meta, cidNearest; species)
+   _, vcellf = readvcells(meta, cidNearest; species)
 
-   V = getvcellcoordinates(meta, vcellids; species)
+   f = Vlasiator.flatten(vmesh, vcellf)
 
    fig = Figure()
    ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
@@ -109,18 +108,15 @@ function vdfslices(meta, location; species="proton", unit=SI, verbose=false)
    )
    fig[2, 1] = lsgrid.layout
 
-   vcellf = reshape(vcellf, length(x), length(y), length(z))
-   for i in eachindex(vcellf)
-      if vcellf[i] < 1e-16; vcellf[i] = 1e-16; end
+   for i in eachindex(f)
+      if f[i] < 1f-16 f[i] = 1f-16 end
    end
-
-   data = [isinf(x) ? NaN : x for x in log10.(vcellf)]
+   data = log10.(f)
 
    plt = volumeslices!(ax, x, y, z, data, colormap=:viridis)
    #TODO: wait for https://github.com/JuliaPlots/Makie.jl/pull/1404
    cbar = Colorbar(fig, plt,
       label="f(v)",
-      minorticks = IntervalsBetween(9),
       minorticksvisible=true)
 
    fig[1, 2] = cbar
