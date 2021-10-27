@@ -10,10 +10,10 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Vlasiator = "7d2ba682-ad6e-4e20-80d9-3f2d4a610bb4"
 
 [compat]
-julia = "1.6"
 Makie = "0.15"
 StatsBase = "0.33"
 Vlasiator = "0.8"
+julia = "1.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
