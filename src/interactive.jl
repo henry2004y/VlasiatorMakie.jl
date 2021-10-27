@@ -56,11 +56,15 @@ function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
 end
 
 """
-    vdfslices(meta, location; species="proton", unit=SI, verbose=false)
+    vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbose=false)
 
 Three orthogonal slices of VDFs from `meta` at `location`.
+# Optional Arguments
+- `fmin`: minimum VDF threshold for plotting.
+- `species`: name of particle.
+- `unit`: unit of input `location`, `SI` or `RE`.
 """
-function vdfslices(meta, location; species="proton", unit=SI, verbose=false)
+function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbose=false)
    if haskey(meta.meshes, species)
       vmesh = meta.meshes[species]
    else
@@ -109,7 +113,7 @@ function vdfslices(meta, location; species="proton", unit=SI, verbose=false)
    fig[2, 1] = lsgrid.layout
 
    for i in eachindex(f)
-      if f[i] < 1f-16 f[i] = 1f-16 end
+      if f[i] < fmin f[i] = fmin end
    end
    data = log10.(f)
 
