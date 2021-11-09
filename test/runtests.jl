@@ -25,6 +25,9 @@ using GLMakie
    fig = vlslice(meta3, var)
    @test fig isa Figure
 
+   fig = vlslices(meta3, var)
+   @test fig isa Figure
+
    location = [0.0, 0.0, 0.0]
    fig = vdfslice(meta1, location)
    @test fig isa Figure

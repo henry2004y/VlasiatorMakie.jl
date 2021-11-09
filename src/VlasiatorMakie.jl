@@ -9,7 +9,7 @@ include("fullrecipe.jl")
 include("interactive.jl")
 
 export
-   vlheatmap, vlslice,
+   vlheatmap, vlslice, vlslices,
    vdfvolume, vdfslice, vdfslices
 
 end

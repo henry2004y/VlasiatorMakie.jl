@@ -117,6 +117,55 @@ function vlheatmap(meta, var; addcolorbar=true, axisunit=RE, kwargs...)
 end
 
 """
+    vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0])
+
+Three orthogonal slices of `var` from `meta`.
+"""
+function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0],
+   addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf)
+   unitx = axisunit == RE ? " [Re]" : " [m]"
+
+   pArgs1 = Vlasiator.set_args(meta, var, axisunit; normal=:x, origin=origin[1])
+   pArgs2 = Vlasiator.set_args(meta, var, axisunit; normal=:y, origin=origin[2])
+   pArgs3 = Vlasiator.set_args(meta, var, axisunit; normal=:z, origin=origin[3])
+
+   x, y = Vlasiator.get_axis(axisunit, pArgs3.plotrange, pArgs3.sizes)
+   x, z = Vlasiator.get_axis(axisunit, pArgs2.plotrange, pArgs2.sizes)
+
+   d1 = Vlasiator.prep2dslice(meta, var, :x, op, pArgs1)
+   d2 = Vlasiator.prep2dslice(meta, var, :y, op, pArgs2)
+   d3 = Vlasiator.prep2dslice(meta, var, :z, op, pArgs3)
+
+   fig = Figure()
+   ax = Axis3(fig[1,1], aspect=(1, 1, 1), elevation=pi/6, perspectiveness=0.5)
+
+   ax.xlabel = "x"*unitx
+   ax.ylabel = "y"*unitx
+   ax.zlabel = "z"*unitx
+
+   xlims!(ax, x[1], x[end])
+   ylims!(ax, y[1], y[end])
+   zlims!(ax, z[1], z[end])
+
+   vmin1, vmax1 = Vlasiator.set_lim(vmin, vmax, d1, colorscale)
+   vmin2, vmax2 = Vlasiator.set_lim(vmin, vmax, d2, colorscale)
+   vmin3, vmax3 = Vlasiator.set_lim(vmin, vmax, d3, colorscale)
+   colormap = :turbo
+   colorrange = (min(vmin1, vmin2, vmin3), max(vmax1, vmax2, vmax3))
+
+   h3 = heatmap!(ax, x, y, d3; colormap, colorrange, transformation=(:xy, origin[1]))
+   h2 = heatmap!(ax, x, z, d2; colormap, colorrange, transformation=(:xz, origin[2]))
+   h1 = heatmap!(ax, y, z, d1; colormap, colorrange, transformation=(:yz, origin[3]))
+
+   if addcolorbar
+      cbar = Colorbar(fig[1,2], h3, label=pArgs1.cb_title, tickalign=1)
+      colgap!(fig.layout, 7)
+   end
+
+   fig
+end
+
+"""
     vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbose=false)
 
 Meshscatter plot of VDFs in 3D.
