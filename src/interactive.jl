@@ -55,6 +55,72 @@ function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
    fig
 end
 
+"TODO: Make it work!"
+function vlslices_interactive(meta::MetaVLSV, var; axisunit=SI, op=:mag)
+   unitx = axisunit == RE ? " [Re]" : " [m]"
+
+   pArgs1 = Vlasiator.set_args(meta, var, axisunit; normal=:x, origin=0.0)
+   pArgs2 = Vlasiator.set_args(meta, var, axisunit; normal=:y, origin=0.0)
+   pArgs3 = Vlasiator.set_args(meta, var, axisunit; normal=:z, origin=0.0)
+
+   x, y = Vlasiator.get_axis(axisunit, pArgs3.plotrange, pArgs3.sizes)
+   x, z = Vlasiator.get_axis(axisunit, pArgs2.plotrange, pArgs2.sizes)
+
+   d1 = Vlasiator.prep2dslice(meta, var, :x, op, pArgs1)
+   d2 = Vlasiator.prep2dslice(meta, var, :y, op, pArgs2)
+   d3 = Vlasiator.prep2dslice(meta, var, :z, op, pArgs3)
+
+   fig = Figure()
+   ax = Axis3(fig[1, 1], aspect=(1, 1, 1), elevation=pi/6, perspectiveness=0.5)
+
+   ax.xlabel = "x"*unitx
+   ax.ylabel = "y"*unitx
+   ax.zlabel = "z"*unitx
+
+   xlims!(ax, x[1], x[end])
+   ylims!(ax, y[1], y[end])
+   zlims!(ax, z[1], z[end])
+
+   lsgrid = labelslidergrid!(
+      fig,
+      ["x", "y", "z"],
+      [1:length(x), 1:length(y), 1:length(z)],
+      formats = [i -> "$(round(x[i], digits=2))",
+          i -> "$(round(y[i], digits=2))", i -> "$(round(z[i], digits=2))"]
+    )
+   fig[2, 1] = lsgrid.layout
+
+   h1 = heatmap!(ax, y, z, d1, colormap=:turbo, transformation=(:yz, 0.0))
+   h2 = heatmap!(ax, x, z, d2, colormap=:turbo, transformation=(:xz, 0.0))
+   h3 = heatmap!(ax, x, y, d3, colormap=:turbo, transformation=(:xy, 0.0))
+
+   # connect sliders to volumeslices update methods
+   sl_yz, sl_xz, sl_xy = lsgrid.sliders
+
+   #TODO: make it work properly!
+   on(sl_yz.value) do v
+      pArgs = Vlasiator.set_args(meta, var, axisunit; normal=:x, origin=v)
+      d1 = Vlasiator.prep2dslice(meta, var, :x, op, pArgs)
+      h1[3] = d1
+   end
+   on(sl_xz.value) do v
+      pArgs = Vlasiator.set_args(meta, var, axisunit; normal=:y, origin=v)
+      d2 = Vlasiator.prep2dslice(meta, var, :y, op, pArgs)
+      h2[3] = d2
+   end
+   on(sl_xy.value) do v
+      pArgs = Vlasiator.set_args(meta, var, axisunit; normal=:z, origin=v)
+      d1 = Vlasiator.prep2dslice(meta, var, :z, op, pArgs)
+      h3[3] = d3
+   end
+
+   set_close_to!(sl_yz, .5length(x))
+   set_close_to!(sl_xz, .5length(y))
+   set_close_to!(sl_xy, .5length(z))
+
+   fig
+end
+
 """
     vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbose=false)
 
@@ -118,7 +184,7 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
    data = log10.(f)
 
    plt = volumeslices!(ax, x, y, z, data, colormap=:viridis)
-   #TODO: wait for https://github.com/JuliaPlots/Makie.jl/pull/1404
+   #TODO: wait for Makie v0.15.4
    cbar = Colorbar(fig, plt,
       label="f(v)",
       minorticksvisible=true)
