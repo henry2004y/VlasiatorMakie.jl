@@ -123,7 +123,12 @@ Three orthogonal slices of `var` from `meta`.
 """
 function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0],
    addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf)
-   unitx = axisunit == RE ? " [Re]" : " [m]"
+   if axisunit == RE
+      unitx = " [Re]"
+      origin .*= Vlasiator.Re
+   else
+      unitx = " [m]"
+   end
 
    pArgs1 = Vlasiator.set_args(meta, var, axisunit; normal=:x, origin=origin[1])
    pArgs2 = Vlasiator.set_args(meta, var, axisunit; normal=:y, origin=origin[2])
@@ -153,9 +158,9 @@ function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0
    colormap = :turbo
    colorrange = (min(vmin1, vmin2, vmin3), max(vmax1, vmax2, vmax3))
 
-   h3 = heatmap!(ax, x, y, d3; colormap, colorrange, transformation=(:xy, origin[1]))
+   h1 = heatmap!(ax, y, z, d1; colormap, colorrange, transformation=(:yz, origin[1]))
    h2 = heatmap!(ax, x, z, d2; colormap, colorrange, transformation=(:xz, origin[2]))
-   h1 = heatmap!(ax, y, z, d1; colormap, colorrange, transformation=(:yz, origin[3]))
+   h3 = heatmap!(ax, x, y, d3; colormap, colorrange, transformation=(:xy, origin[3]))
 
    if addcolorbar
       cbar = Colorbar(fig[1,2], h3, label=pArgs1.cb_title, tickalign=1)
@@ -171,7 +176,7 @@ end
 Meshscatter plot of VDFs in 3D.
 """
 function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbose=false)
-   ncells = meta.ncells
+
    if haskey(meta.meshes, species)
       vmesh = meta.meshes[species]
    else
@@ -183,7 +188,6 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, location)
    cidNearest = getnearestcellwithvdf(meta, cidReq)
-
    cellused = getcellcoordinates(meta, cidNearest)
 
    if verbose
