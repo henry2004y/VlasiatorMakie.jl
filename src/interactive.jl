@@ -89,9 +89,9 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
       end
    end
 
-   _, vcellf = readvcells(meta, cidNearest; species)
+   vcellids, vcellf = readvcells(meta, cidNearest; species)
 
-   f = Vlasiator.flatten(vmesh, vcellf)
+   f = Vlasiator.flatten(vmesh, vcellids, vcellf)
 
    fig = Figure()
    ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
@@ -118,7 +118,7 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
    data = log10.(f)
 
    plt = volumeslices!(ax, x, y, z, data, colormap=:viridis)
-   #TODO: wait for https://github.com/JuliaPlots/Makie.jl/pull/1404
+   #TODO: wait for Makie v0.15.4 for colormap setup!
    cbar = Colorbar(fig, plt,
       label="f(v)",
       minorticksvisible=true)
