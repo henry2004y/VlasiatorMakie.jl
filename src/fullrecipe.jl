@@ -183,7 +183,7 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
       throw(ArgumentError("Unable to detect population $species"))
    end
 
-   unit == RE && (location .*= Re)
+   unit == RE && (location .*= Vlasiator.Re)
 
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, location)
