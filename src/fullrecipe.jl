@@ -99,13 +99,13 @@ function Makie.plot!(vlplot::Viz)
    vlplot
 end
 
-function vlheatmap(meta, var; addcolorbar=true, axisunit=RE, kwargs...)
+function vlheatmap(meta, var; fig=nothing, addcolorbar=true, axisunit=RE, kwargs...)
    pArgs = Vlasiator.set_args(meta, var, axisunit)
 
-   fig = Figure()
+   isnothing(fig) && (fig = Figure())
    c = viz(fig[1,1], meta, var; axisunit, kwargs...)
    c.axis.title = @sprintf "t= %4.1fs" meta.time
-   # TODO: current limitation in Makie 0.15.1: no conversion from initial String type
+   # TODO: limitation in Makie 0.16.2: no conversion from initial String type
    c.axis.xlabel = pArgs.strx
    c.axis.ylabel = pArgs.stry
    c.axis.autolimitaspect = 1
@@ -122,7 +122,7 @@ end
 Three orthogonal slices of `var` from `meta`.
 """
 function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0],
-   addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf)
+   addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf, fig=nothing)
    if axisunit == RE
       unitx = " [Re]"
       origin .*= Vlasiator.Re
@@ -141,7 +141,7 @@ function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0
    d2 = Vlasiator.prep2dslice(meta, var, :y, op, pArgs2)
    d3 = Vlasiator.prep2dslice(meta, var, :z, op, pArgs3)
 
-   fig = Figure()
+   isnothing(fig) && (fig = Figure())
    ax = Axis3(fig[1,1], aspect=(1, 1, 1), elevation=pi/6, perspectiveness=0.5)
 
    ax.xlabel = "x"*unitx
@@ -175,7 +175,8 @@ end
 
 Meshscatter plot of VDFs in 3D.
 """
-function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbose=false)
+function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbose=false,
+   fig=nothing)
 
    if haskey(meta.meshes, species)
       vmesh = meta.meshes[species]
@@ -212,7 +213,7 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
          elseif hasvariable(meta, species*"/EffectiveSparsityThreshold")
             readvariable(meta, species*"/EffectiveSparsityThreshold", cidNearest)
          else
-            1e-16
+            1f-16
          end
    end
 
@@ -226,12 +227,12 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
    alphas = LinRange(0, 1, 101)
    cmap_alpha = RGBAf.(colors, alphas)
 
-   fig = Figure()
+   isnothing(fig) && (fig = Figure())
    ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
    ax.xlabel = "vx [m/s]"
    ax.ylabel = "vy [m/s]"
    ax.zlabel = "vz [m/s]"
-   #TODO: wait for https://github.com/JuliaPlots/Makie.jl/pull/1404
+
    plt = meshscatter!(ax, Vselect, color=log10.(fselect),
       marker=Rect3f(Vec3f(0), Vec3f(4*vmesh.dv[1])),
       colormap=cmap_alpha,
@@ -257,7 +258,7 @@ function MakieLayout.get_minor_tickvalues(::LogMinorTicks, scale, tickvalues, vm
         @view(extended_tickvalues[1:end-1]),
         @view(extended_tickvalues[2:end])
      )
-       interval = hi-lo
+       interval = hi - lo
        steps = log10.(LinRange(10^lo, 10^hi, 11))
        append!(vals, steps[2:end-1])
    end
@@ -271,26 +272,27 @@ custom_formatter(values) = map(
 
 function vdfslice(meta, location;
    species="proton", unit=SI, unitv="km/s", slicetype=:nothing, vslicethick=0.0,
-   center=:nothing, fmin=-Inf, fmax=Inf, weight=:particle, flimit=-1.0, verbose=false)
+   center=:nothing, vmin=-Inf, vmax=Inf, weight=:particle, flimit=-1.0, verbose=false,
+   fig=nothing)
 
    v1, v2, r1, r2, fweight, strx, stry, str_title =
       Vlasiator.prep_vdf(meta, location;
          species, unit, unitv, slicetype, vslicethick, center, weight, flimit, verbose)
 
-   isinf(fmin) && (fmin = minimum(fweight))
-   isinf(fmax) && (fmax = maximum(fweight))
+   isinf(vmin) && (vmin = minimum(fweight))
+   isinf(vmax) && (vmax = maximum(fweight))
 
-   verbose && @info "Active f range is $fmin, $fmax"
+   verbose && @info "Active f range is $vmin, $vmax"
 
    h = fit(Histogram, (v1, v2), weights(fweight), (r1, r2))
 
-   clims = (fmin, maximum(h.weights))
+   clims = (vmin, maximum(h.weights))
 
    data = [isinf(x) ? NaN : x for x in log10.(h.weights)]
 
-   fig = Figure()
+   isnothing(fig) && (fig = Figure())
 
-   ax, hm = heatmap(fig[1, 1],  r1, r2, data,
+   ax, hm = heatmap(fig[1, 1], r1, r2, data;
       colormap=:turbo, colorrange=log10.(clims))
 
    cb = Colorbar(fig[1, 2], hm;
