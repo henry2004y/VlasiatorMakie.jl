@@ -22,7 +22,7 @@ Visualize Vlasiator output `var` in `meta` with various options:
       alpha         = 1.0,
 
       # Vlasiator.jl attributes
-      axisunit      = RE,
+      axisunit      = EARTH,
       colorscale    = Linear,
       normal        = :y, # only works in 3D
       vmin          = -Inf,
@@ -99,7 +99,7 @@ function Makie.plot!(vlplot::Viz)
    vlplot
 end
 
-function vlheatmap(meta, var; fig=nothing, addcolorbar=true, axisunit=RE, kwargs...)
+function vlheatmap(meta, var; fig=nothing, addcolorbar=true, axisunit=EARTH, kwargs...)
    pArgs = Vlasiator.set_args(meta, var, axisunit)
 
    isnothing(fig) && (fig = Figure())
@@ -123,9 +123,9 @@ Three orthogonal slices of `var` from `meta`.
 """
 function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0],
    addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf, fig=nothing)
-   if axisunit == RE
+   if axisunit == EARTH
       unitx = " [Re]"
-      origin .*= Vlasiator.Re
+      origin .*= Vlasiator.RE
    else
       unitx = " [m]"
    end
@@ -184,7 +184,7 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
       throw(ArgumentError("Unable to detect population $species"))
    end
 
-   unit == RE && (location .*= Vlasiator.Re)
+   unit == EARTH && (location .*= Vlasiator.RE)
 
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, location)

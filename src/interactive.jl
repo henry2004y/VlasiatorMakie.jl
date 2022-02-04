@@ -15,7 +15,7 @@ function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
          3, "x", "y"
       end
 
-   unitx = axisunit == RE ? " [Re]" : " [m]"
+   unitx = axisunit == EARTH ? " [Re]" : " [m]"
 
    dx = meta.dcoord[dir] / 2^meta.maxamr
 
@@ -62,7 +62,7 @@ Three orthogonal slices of VDFs from `meta` at `location`.
 # Optional Arguments
 - `fmin`: minimum VDF threshold for plotting.
 - `species`: name of particle.
-- `unit`: unit of input `location`, `SI` or `RE`.
+- `unit`: unit of input `location`, `SI` or `EARTH`.
 """
 function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbose=false)
    if haskey(meta.meshes, species)
@@ -71,7 +71,7 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
       throw(ArgumentError("Unable to detect population $species"))
    end
 
-   unit == RE && (location .*= Re)
+   unit == EARTH && (location .*= RE)
 
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, location)

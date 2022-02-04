@@ -10,7 +10,7 @@ end
 
 "Conversion for 2D plots."
 function Makie.convert_arguments(P::SurfaceLike, meta::MetaVLSV, var;
-   axisunit=RE, op=:mag)
+   axisunit=EARTH, op=:mag)
    pArgs = Vlasiator.set_args(meta, var, axisunit)
    x, y = Vlasiator.get_axis(axisunit, pArgs.plotrange, pArgs.sizes)
    data = Vlasiator.prep2d(meta, var, op)
