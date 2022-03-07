@@ -9,7 +9,7 @@ Visualize Vlasiator output `var` in `meta` with various options:
 * `normal`     - slice normal direction
 * `vmin`       - minimum color value
 * `vmax`       - maximum color value
-* `op`         - selection of vector components
+* `comp`       - selection of vector components
 """
 @recipe(Viz, meta, var) do scene
    Attributes(;
@@ -27,7 +27,7 @@ Visualize Vlasiator output `var` in `meta` with various options:
       normal        = :y, # only works in 3D
       vmin          = -Inf,
       vmax          = Inf,
-      op            = :mag,
+      comp          = 0,
       origin        = 0.0,
    )
 end
@@ -35,7 +35,7 @@ end
 function Makie.plot!(vlplot::Viz)
    meta        = vlplot[:meta][]
    var         = vlplot[:var][]
-   op          = vlplot.op[]
+   comp        = vlplot.comp[]
    normal      = vlplot.normal[]
    axisunit    = vlplot.axisunit[]
    vmin        = vlplot.vmin[]
@@ -53,7 +53,7 @@ function Makie.plot!(vlplot::Viz)
       pArgs = Vlasiator.set_args(meta, var, axisunit)
 
       x, y = Vlasiator.get_axis(axisunit, pArgs.plotrange, pArgs.sizes)
-      data = Vlasiator.prep2d(meta, var, op)
+      data = Vlasiator.prep2d(meta, var, comp)
 
       if var in ("fg_b", "fg_e", "vg_b_vol", "vg_e_vol") || endswith(var, "vg_v")
          rho_ = findfirst(endswith("rho"), meta.variable)
@@ -92,7 +92,7 @@ function Makie.plot!(vlplot::Viz)
    else # 3D
       pArgs = Vlasiator.set_args(meta, var, axisunit; normal, origin)
       x, y = Vlasiator.get_axis(axisunit, pArgs.plotrange, pArgs.sizes)
-      data = Vlasiator.prep2dslice(meta, var, normal, op, pArgs)
+      data = Vlasiator.prep2dslice(meta, var, normal, comp, pArgs)
 
       heatmap!(vlplot, x, y, data, colormap=vlplot.colormap)
    end
@@ -117,11 +117,11 @@ function vlheatmap(meta, var; fig=nothing, addcolorbar=true, axisunit=EARTH, kwa
 end
 
 """
-    vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0])
+    vlslices(meta::MetaVLSV, var; axisunit=SI, comp=0, origin=[0.0, 0.0, 0.0])
 
 Three orthogonal slices of `var` from `meta`.
 """
-function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0.0],
+function vlslices(meta::MetaVLSV, var; axisunit=SI, comp=0, origin=[0.0, 0.0, 0.0],
    addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf, fig=nothing)
    if axisunit == EARTH
       unitx = " [Re]"
@@ -137,9 +137,9 @@ function vlslices(meta::MetaVLSV, var; axisunit=SI, op=:mag, origin=[0.0, 0.0, 0
    x, y = Vlasiator.get_axis(axisunit, pArgs3.plotrange, pArgs3.sizes)
    x, z = Vlasiator.get_axis(axisunit, pArgs2.plotrange, pArgs2.sizes)
 
-   d1 = Vlasiator.prep2dslice(meta, var, :x, op, pArgs1)
-   d2 = Vlasiator.prep2dslice(meta, var, :y, op, pArgs2)
-   d3 = Vlasiator.prep2dslice(meta, var, :z, op, pArgs3)
+   d1 = Vlasiator.prep2dslice(meta, var, :x, comp, pArgs1)
+   d2 = Vlasiator.prep2dslice(meta, var, :y, comp, pArgs2)
+   d3 = Vlasiator.prep2dslice(meta, var, :z, comp, pArgs3)
 
    isnothing(fig) && (fig = Figure())
    ax = Axis3(fig[1,1], aspect=(1, 1, 1), elevation=pi/6, perspectiveness=0.5)

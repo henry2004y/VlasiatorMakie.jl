@@ -1,11 +1,11 @@
 # Interactive plots with Observables
 
 """
-    vlslice(meta, var; normal=:y, axisunit=SI, op=:mag)
+    vlslice(meta, var; normal=:y, axisunit=SI, comp=0)
 
 Interactive 2D slice of 3D `var` in `normal` direction.
 """
-function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
+function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, comp=0)
    dir, str1, str2 =
       if normal == :x
          1, "y", "z"
@@ -44,7 +44,7 @@ function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, op=:mag)
       begin
          origin = (slvalues[1]-1)*dx + meta.coordmin[dir]
          pArgs = Vlasiator.set_args(meta, var, axisunit; normal, origin)
-         Vlasiator.prep2dslice(meta, var, normal, op, pArgs)
+         Vlasiator.prep2dslice(meta, var, normal, comp, pArgs)
       end
    end
 

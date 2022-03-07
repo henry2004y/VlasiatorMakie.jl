@@ -22,11 +22,17 @@ using GLMakie
    fig, ax, plt = heatmap(meta2, var)
    @test plt isa Heatmap
 
+   fig, ax, plt = heatmap(meta2, var, EARTH, 0, :z)
+   @test plt isa Heatmap
+
    fig = vlslice(meta3, var)
    @test fig isa Figure
 
    fig = vlslices(meta3, var)
    @test fig isa Figure
+
+   fig = volume(meta3, "fg_b", EARTH, 3; algorithm=:iso, isovalue=0.0, isorange=1e-9)
+   @test fig isa Makie.FigureAxisPlot
 
    location = [0.0, 0.0, 0.0]
    fig = vdfslice(meta1, location)

@@ -22,6 +22,12 @@ meta = load(file)
 heatmap(meta, "proton/vg_rho")
 ```
 
+3D isosurface:
+
+```julia
+fig = volume(meta, "fg_b", EARTH, 3; algorithm=:iso, isovalue=0.0, isorange=1e-9)
+```
+
 Single figure contour plot:
 
 ```julia
