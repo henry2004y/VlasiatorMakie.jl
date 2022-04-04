@@ -71,7 +71,7 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
       throw(ArgumentError("Unable to detect population $species"))
    end
 
-   unit == EARTH && (location .*= RE)
+   unit == EARTH && (location .*= Vlasiator.RE)
 
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, location)
@@ -91,7 +91,7 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
 
    vcellids, vcellf = readvcells(meta, cidNearest; species)
 
-   f = Vlasiator.flatten(vmesh, vcellids, vcellf)
+   f = Vlasiator.reconstruct(vmesh, vcellids, vcellf)
 
    fig = Figure()
    ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
@@ -118,7 +118,7 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
    data = log10.(f)
 
    plt = volumeslices!(ax, x, y, z, data, colormap=:viridis)
-   #TODO: wait for Makie v0.15.4 for colormap setup!
+   #TODO: improve on colormap setup!
    cbar = Colorbar(fig, plt,
       label="f(v)",
       minorticksvisible=true)
