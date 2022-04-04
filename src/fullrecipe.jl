@@ -271,7 +271,7 @@ custom_formatter(values) = map(
 )
 
 function vdfslice(meta, location;
-   species="proton", unit=SI, unitv="km/s", slicetype=:nothing, vslicethick=0.0,
+   species="proton", unit=SI, unitv="km/s", slicetype=:default, vslicethick=0.0,
    center=:nothing, vmin=-Inf, vmax=Inf, weight=:particle, flimit=-1.0, verbose=false,
    fig=nothing)
 
