@@ -10,7 +10,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Vlasiator = "7d2ba682-ad6e-4e20-80d9-3f2d4a610bb4"
 
 [compat]
-Makie = "0.15, 0.16"
+Makie = "0.15, 0.16, 0.17"
 StatsBase = "0.33"
 Vlasiator = "0.9"
 julia = "1.7"
