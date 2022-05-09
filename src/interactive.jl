@@ -30,13 +30,11 @@ function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, comp=0)
    ax.xlabel = str1*unitx
    ax.ylabel = str2*unitx
 
-   lsgrid = labelslidergrid!(
-      fig,
-      ["location in normal direction $(String(normal))"],
-      [1:depth];
-      format = x -> "$(x) cells")
-
-   fig[2, 1] = lsgrid.layout
+   lsgrid = SliderGrid(fig[2, 1],
+      (label = "location in normal direction $(String(normal))",
+       range=1:depth,
+       format=x -> "$(x) cells"),
+   )
 
    sliderobservables = [s.value for s in lsgrid.sliders]
 
@@ -103,14 +101,11 @@ function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbos
    y = LinRange(vmesh.vmin[2], vmesh.vmax[2], vmesh.vblock_size[2]*vmesh.vblocks[2])
    z = LinRange(vmesh.vmin[3], vmesh.vmax[3], vmesh.vblock_size[3]*vmesh.vblocks[3])
 
-   lsgrid = labelslidergrid!(
-     fig,
-     ["vx", "vy", "vz"],
-     [1:length(x), 1:length(y), 1:length(z)],
-     formats = [i -> "$(round(x[i], digits=2))",
-         i -> "$(round(y[i], digits=2))", i -> "$(round(z[i], digits=2))"]
+   lsgrid = SliderGrid(fig[2, 1],
+      (label="vx", range=1:length(x), format=i -> "$(round(x[i], digits=2))"),
+      (label="vy", range=1:length(y), format=i -> "$(round(y[i], digits=2))"),
+      (label="vz", range=1:length(z), format=i -> "$(round(z[i], digits=2))"),
    )
-   fig[2, 1] = lsgrid.layout
 
    for i in eachindex(f)
       if f[i] < fmin f[i] = fmin end
