@@ -222,10 +222,7 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
    fselect = vcellf[findex_]
    Vselect = V[findex_]
 
-   cmap = :turbo
-   colors = to_colormap(cmap, 101)
-   alphas = LinRange(0, 1, 101)
-   cmap_alpha = RGBAf.(colors, alphas)
+   cmap = resample_cmap(:turbo, 101; alpha=(0, 1))
 
    isnothing(fig) && (fig = Figure())
    ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
@@ -235,7 +232,7 @@ function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbo
 
    plt = meshscatter!(ax, Vselect, color=log10.(fselect),
       marker=Rect3f(Vec3f(0), Vec3f(4*vmesh.dv[1])),
-      colormap=cmap_alpha,
+      colormap=cmap,
       transparency=true, shading=false)
 
    cbar = Colorbar(fig, plt, label="f(v)")
