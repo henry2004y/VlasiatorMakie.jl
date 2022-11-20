@@ -38,7 +38,7 @@ jobs:
         run: |
           using Pkg;
           # dev mono repo versions
-          pkg"dev . ./VlasiatorMakie"
+          pkg"dev ."
       - name: Run the tests
         continue-on-error: true
         run: >
