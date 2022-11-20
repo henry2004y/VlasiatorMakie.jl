@@ -1,5 +1,8 @@
 # VlasiatorMakie.jl
 
+[![Build Status](https://img.shields.io/github/workflow/status/henry2004y/VlasiatorMakie.jl/CI)](https://github.com/henry2004y/VlasiatorMakie.jl/actions)
+[![Coverage](https://codecov.io/gh/henry2004y/VlasiatorMakie.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/henry2004y/VlasiatorMakie.jl)
+
 Makie recipes for visualization of [Vlasiator.jl](https://github.com/henry2004y/Vlasiator.jl.git).
 
 ## Installation
