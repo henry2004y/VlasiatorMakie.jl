@@ -1,7 +1,7 @@
 module VlasiatorMakie
 
 using Vlasiator, StatsBase, Printf
-
+using Vlasiator: AxisUnit, ColorScale
 using Makie
 
 include("typerecipe.jl")

@@ -99,7 +99,8 @@ function Makie.plot!(vlplot::Viz)
    vlplot
 end
 
-function vlheatmap(meta, var; fig=nothing, addcolorbar=true, axisunit=EARTH, kwargs...)
+function vlheatmap(meta::MetaVLSV, var::String; fig=nothing, addcolorbar::Bool=true,
+   axisunit::AxisUnit=EARTH, kwargs...)
    pArgs = Vlasiator.set_args(meta, var, axisunit)
 
    isnothing(fig) && (fig = Figure())
@@ -121,8 +122,9 @@ end
 
 Three orthogonal slices of `var` from `meta`.
 """
-function vlslices(meta::MetaVLSV, var; axisunit=SI, comp=0, origin=[0.0, 0.0, 0.0],
-   addcolorbar=false, colorscale=Linear, vmin::Real=-Inf, vmax::Real=Inf, fig=nothing)
+function vlslices(meta::MetaVLSV, var::String; fig=nothing, axisunit::AxisUnit=SI,
+   comp::Union{Symbol, Int}=0, origin::AbstractVector=[0.0, 0.0, 0.0],
+   addcolorbar::Bool=false, colorscale::ColorScale=Linear, vmin::Real=-Inf, vmax::Real=Inf)
    if axisunit == EARTH
       unitx = " [Re]"
       origin .*= Vlasiator.RE
@@ -175,8 +177,8 @@ end
 
 Meshscatter plot of VDFs in 3D.
 """
-function vdfvolume(meta, location; species="proton", unit=SI, flimit=-1.0, verbose=false,
-   fig=nothing)
+function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="proton",
+   unit::AxisUnit=SI, flimit::Real=-1.0, verbose::Bool=false, fig=nothing)
 
    if haskey(meta.meshes, species)
       vmesh = meta.meshes[species]

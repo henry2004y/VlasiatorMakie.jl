@@ -32,6 +32,7 @@ Single figure contour plot:
 
 ```julia
 fig = Figure(resolution=(700, 600), fontsize=18)
+ga = fig[1,1] = GridLayout()
 ax = Axis(fig[1,1],
    aspect = DataAspect(),
    title = "t = $(round(meta.time, digits=1))s",
@@ -42,7 +43,7 @@ hmap = heatmap!(meta, "proton/vg_rho", colormap=:turbo)
 cbar = Colorbar(fig, hmap, label=L"$\rho$ [amu/cc]", width=13,
                 ticksize=13, tickalign=1, height=Relative(1))
 fig[1,2] = cbar
-colgap!(fig.layout, 1)
+colgap!(ga, 1)
 ```
 
 Multi-figure contour plots:

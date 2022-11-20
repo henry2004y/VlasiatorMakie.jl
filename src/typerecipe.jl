@@ -1,7 +1,7 @@
 # Type conversion from Vlasiator to Makie
 
 "Conversion for 1D plots"
-function Makie.convert_arguments(P::PointBased, meta::MetaVLSV, var)
+function Makie.convert_arguments(P::PointBased, meta::MetaVLSV, var::String)
    data = readvariable(meta, var)
    x = LinRange(meta.coordmin[1], meta.coordmax[1], meta.ncells[1])
 
@@ -9,8 +9,9 @@ function Makie.convert_arguments(P::PointBased, meta::MetaVLSV, var)
 end
 
 "Conversion for 2D plots."
-function Makie.convert_arguments(P::SurfaceLike, meta::MetaVLSV, var,
-   axisunit=EARTH, comp=0, normal=:y, origin=0.0)
+function Makie.convert_arguments(P::SurfaceLike, meta::MetaVLSV, var::String,
+   axisunit::AxisUnit=EARTH, comp::Union{Symbol, Int}=0, normal::Symbol=:y,
+   origin::AbstractFloat=0.0)
 
    if meta.maxamr > 0
       pArgs = Vlasiator.set_args(meta, var, axisunit; normal, origin)
@@ -26,8 +27,8 @@ function Makie.convert_arguments(P::SurfaceLike, meta::MetaVLSV, var,
 end
 
 "Conversion for 3D plots."
-function Makie.convert_arguments(P::VolumeLike, meta::MetaVLSV, var,
-   axisunit=EARTH, comp=1)
+function Makie.convert_arguments(P::VolumeLike, meta::MetaVLSV, var::String,
+   axisunit::AxisUnit=EARTH, comp::Union{Symbol, Int}=1)
    (;ncells, coordmin, coordmax) = meta
 
    # Scale the sizes to the highest refinement level

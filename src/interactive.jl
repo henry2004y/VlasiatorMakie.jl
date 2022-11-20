@@ -5,7 +5,8 @@
 
 Interactive 2D slice of 3D `var` in `normal` direction.
 """
-function vlslice(meta::MetaVLSV, var; normal=:y, axisunit=SI, comp=0)
+function vlslice(meta::MetaVLSV, var::String;
+   normal::Symbol=:y, axisunit::AxisUnit=SI, comp::Union{Symbol, Int}=0)
    dir, str1, str2 =
       if normal == :x
          1, "y", "z"
@@ -62,7 +63,8 @@ Three orthogonal slices of VDFs from `meta` at `location`.
 - `species`: name of particle.
 - `unit`: unit of input `location`, `SI` or `EARTH`.
 """
-function vdfslices(meta, location; fmin=1f-16, species="proton", unit=SI, verbose=false)
+function vdfslices(meta::MetaVLSV, location::AbstractVector; fmin::AbstractFloat=1f-16,
+   species::String="proton", unit::AxisUnit=SI, verbose::Bool=false)
    if haskey(meta.meshes, species)
       vmesh = meta.meshes[species]
    else
