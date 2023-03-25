@@ -1,7 +1,7 @@
 name = "VlasiatorMakie"
 uuid = "af7e05b2-8ba0-474e-bf83-503ba399852e"
 authors = ["Hongyang Zhou <hyzhou@umich.edu> and contributors"]
-version = "0.1.8"
+version = "0.1.9"
 
 [deps]
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
@@ -10,9 +10,9 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Vlasiator = "7d2ba682-ad6e-4e20-80d9-3f2d4a610bb4"
 
 [compat]
-Makie = "0.18"
+Makie = "0.19"
 StatsBase = "0.33"
-Vlasiator = "0.9"
+Vlasiator = "0.9, 0.10"
 julia = "1.7"
 
 [extras]

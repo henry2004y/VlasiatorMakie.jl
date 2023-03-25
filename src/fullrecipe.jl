@@ -246,7 +246,7 @@ end
 
 struct LogMinorTicks end
 
-function MakieLayout.get_minor_tickvalues(::LogMinorTicks, scale, tickvalues, vmin, vmax)
+function Makie.get_minor_tickvalues(::LogMinorTicks, scale, tickvalues, vmin, vmax)
    vals = Float64[]
    extended_tickvalues = [
       tickvalues[1] - (tickvalues[2] - tickvalues[1]);

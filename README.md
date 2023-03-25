@@ -81,7 +81,7 @@ Adjusting axis limits:
 
 ```julia
 location = [0, 0, 0]
-fig = vdfslice(meta, location)
+fig = VlasiatorMakie.vdfslice(meta, location)
 xlims!(fig.content[1], -1000, 1000)
 ylims!(fig.content[1], -1000, 1000)
 limits!(fig.content[1], 0, 10, 0, 10) # xmin, xmax, ymin, ymax
