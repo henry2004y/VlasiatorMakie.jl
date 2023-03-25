@@ -1,6 +1,6 @@
 # VlasiatorMakie.jl
 
-[![Build Status](https://img.shields.io/github/workflow/status/henry2004y/VlasiatorMakie.jl/CI)](https://github.com/henry2004y/VlasiatorMakie.jl/actions)
+[![Build Status](https://github.com/henry2004y/VlasiatorMakie.jl/workflows/CI/badge.svg)](https://github.com/henry2004y/VlasiatorMakie.jl/actions?query=workflow%3ACI+branch%3Amain)
 [![Coverage](https://codecov.io/gh/henry2004y/VlasiatorMakie.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/henry2004y/VlasiatorMakie.jl)
 
 Makie recipes for visualization of [Vlasiator.jl](https://github.com/henry2004y/Vlasiator.jl.git).
