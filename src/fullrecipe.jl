@@ -192,10 +192,11 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
 
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, loc)
-   cidNearest = getnearestcellwithvdf(meta, cidReq)
+   cidNearest = getnearestcellwithvdf(meta, cidReq, species)
    ccoords = getcellcoordinates(meta, cidNearest)
 
    if verbose
+      @info "Species             : $species"
       @info "Original coordinates: $loc"
       @info "Original cell       : $cidReq"
       @info "Actual cell         : $cidNearest"
