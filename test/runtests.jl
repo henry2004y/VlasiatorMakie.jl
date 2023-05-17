@@ -25,10 +25,10 @@ using GLMakie
    fig, ax, plt = heatmap(meta2, var, EARTH, 0, :z)
    @test plt isa Heatmap
 
-   fig = vlslice(meta3, var)
+   fig, ax = vlslice(meta3, var)
    @test fig isa Figure
 
-   fig = vlslices(meta3, var)
+   fig, ax = vlslices(meta3, var)
    @test fig isa Figure
 
    fig = volume(meta3, "fg_b", EARTH, 3; algorithm=:iso, isovalue=0.0, isorange=1e-9)
@@ -41,6 +41,6 @@ using GLMakie
    fig = vdfslices(meta1, location)
    @test fig isa Figure
 
-   fig = vdfvolume(meta1, location)
+   fig, ax = vdfvolume(meta1, location)
    @test fig isa Figure
 end

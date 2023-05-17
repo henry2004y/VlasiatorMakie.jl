@@ -143,7 +143,7 @@ function vlslices(meta::MetaVLSV, var::String; fig=nothing, axisunit::AxisUnit=S
    d2 = Vlasiator.prep2dslice(meta, var, :y, comp, pArgs2)
    d3 = Vlasiator.prep2dslice(meta, var, :z, comp, pArgs3)
 
-   isnothing(fig) && (fig = Figure())
+   isnothing(fig) && (fig = Figure(fontsize=18))
    ax = Axis3(fig[1,1], aspect=(1, 1, 1), elevation=pi/6, perspectiveness=0.5)
 
    ax.xlabel = "x"*unitx
@@ -169,7 +169,7 @@ function vlslices(meta::MetaVLSV, var::String; fig=nothing, axisunit::AxisUnit=S
       colgap!(fig.layout, 7)
    end
 
-   fig
+   fig, ax
 end
 
 """
@@ -226,7 +226,7 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
 
    cmap = resample_cmap(:turbo, 101; alpha=(0, 1))
 
-   isnothing(fig) && (fig = Figure())
+   isnothing(fig) && (fig = Figure(fontsize=18))
    if unit == SI
       ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $ccoords (m) in log scale")
    elseif unit == EARTH
@@ -246,7 +246,7 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
 
    fig[1, 2] = cbar
 
-   fig
+   fig, ax
 end
 
 struct LogMinorTicks end
@@ -309,5 +309,5 @@ function vdfslice(meta, location;
    ax.xlabel = strx
    ax.ylabel = stry
 
-   fig
+   fig, ax
 end
