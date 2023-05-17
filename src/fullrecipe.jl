@@ -186,21 +186,20 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
       throw(ArgumentError("Unable to detect population $species"))
    end
 
-   unit == EARTH && (location .*= Vlasiator.RE)
+   loc = unit == EARTH ?
+      location .* Vlasiator.RE :
+      location
 
    # Calculate cell ID from given coordinates
-   cidReq = getcell(meta, location)
+   cidReq = getcell(meta, loc)
    cidNearest = getnearestcellwithvdf(meta, cidReq)
-   cellused = getcellcoordinates(meta, cidNearest)
+   ccoords = getcellcoordinates(meta, cidNearest)
 
    if verbose
-      @info "Original coordinates : $location"
-      @info "Original cell        : $(getcellcoordinates(meta, cidReq))"
-      @info "Nearest cell with VDF: $cellused"
-      let
-         x, y, z = getcellcoordinates(meta, cidNearest)
-         @info "cellid $cidNearest, x = $x, y = $y, z = $z"
-      end
+      @info "Original coordinates: $loc"
+      @info "Original cell       : $cidReq"
+      @info "Actual cell         : $cidNearest"
+      @info "Actual coordinates  : $ccoords"
    end
 
    vcellids, vcellf = readvcells(meta, cidNearest; species)
@@ -227,7 +226,12 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
    cmap = resample_cmap(:turbo, 101; alpha=(0, 1))
 
    isnothing(fig) && (fig = Figure())
-   ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
+   if unit == SI
+      ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $ccoords (m) in log scale")
+   elseif unit == EARTH
+      coords = round.(ccoords ./ Vlasiator.RE, digits=1) 
+      ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $coords (RE) in log scale")
+   end
    ax.xlabel = "vx [m/s]"
    ax.ylabel = "vy [m/s]"
    ax.zlabel = "vz [m/s]"
