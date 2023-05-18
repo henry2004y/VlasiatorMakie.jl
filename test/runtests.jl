@@ -41,6 +41,6 @@ using GLMakie
    fig = vdfslices(meta1, location)
    @test fig isa Figure
 
-   fig, ax = vdfvolume(meta1, location)
+   fig, ax = vdfvolume(meta1, location; verbose=true)
    @test fig isa Figure
 end
