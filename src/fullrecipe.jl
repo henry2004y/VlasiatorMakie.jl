@@ -1,7 +1,7 @@
 # Full recipes for customized Vlasiator plots.
 
 """
-    viz(meta, var)
+    viz(meta, var; args)
 
 Visualize Vlasiator output `var` in `meta` with various options:
 * `axisunit`   - unit of axis of type `AxisUnit`
@@ -111,7 +111,7 @@ function vlheatmap(meta::MetaVLSV, var::String; fig=nothing, addcolorbar::Bool=t
    c.axis.ylabel = pArgs.stry
    c.axis.autolimitaspect = 1
    if addcolorbar
-      cbar = Colorbar(fig[1,2], c.plot, label=pArgs.cb_title, tickalign=1)
+      cbar = Colorbar(fig[1,2], c.plot, label=latexstring(pArgs.cb_title), tickalign=1)
       colgap!(fig.layout, 7)
    end
    fig
@@ -165,7 +165,7 @@ function vlslices(meta::MetaVLSV, var::String; fig=nothing, axisunit::AxisUnit=S
    h3 = heatmap!(ax, x, y, d3; colormap, colorrange, transformation=(:xy, origin[3]))
 
    if addcolorbar
-      cbar = Colorbar(fig[1,2], h3, label=pArgs1.cb_title, tickalign=1)
+      cbar = Colorbar(fig[1,2], h3, label=latexstring(pArgs1.cb_title), tickalign=1)
       colgap!(fig.layout, 7)
    end
 
