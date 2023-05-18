@@ -51,7 +51,7 @@ function vlslice(meta::MetaVLSV, var::String;
 
    set_close_to!(lsgrid.sliders[1], .5depth)
 
-   fig
+   fig, ax
 end
 
 """

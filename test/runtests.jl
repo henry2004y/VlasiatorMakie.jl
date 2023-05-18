@@ -35,7 +35,7 @@ using GLMakie
    @test fig isa Makie.FigureAxisPlot
 
    location = [0.0, 0.0, 0.0]
-   fig = VlasiatorMakie.vdfslice(meta1, location)
+   fig, ax = VlasiatorMakie.vdfslice(meta1, location)
    @test fig isa Figure
 
    fig = vdfslices(meta1, location)

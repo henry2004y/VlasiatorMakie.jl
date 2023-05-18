@@ -12,7 +12,7 @@ Vlasiator = "7d2ba682-ad6e-4e20-80d9-3f2d4a610bb4"
 [compat]
 Makie = "0.19"
 StatsBase = "0.33"
-Vlasiator = "0.9, 0.10"
+Vlasiator = "0.10"
 julia = "1.7"
 
 [extras]
