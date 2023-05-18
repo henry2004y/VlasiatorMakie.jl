@@ -1,7 +1,7 @@
 # Full recipes for customized Vlasiator plots.
 
 """
-    viz(meta, var)
+    viz(meta, var; args)
 
 Visualize Vlasiator output `var` in `meta` with various options:
 * `axisunit`   - unit of axis of type `AxisUnit`
@@ -111,7 +111,7 @@ function vlheatmap(meta::MetaVLSV, var::String; fig=nothing, addcolorbar::Bool=t
    c.axis.ylabel = pArgs.stry
    c.axis.autolimitaspect = 1
    if addcolorbar
-      cbar = Colorbar(fig[1,2], c.plot, label=pArgs.cb_title, tickalign=1)
+      cbar = Colorbar(fig[1,2], c.plot, label=latexstring(pArgs.cb_title), tickalign=1)
       colgap!(fig.layout, 7)
    end
    fig
@@ -143,7 +143,7 @@ function vlslices(meta::MetaVLSV, var::String; fig=nothing, axisunit::AxisUnit=S
    d2 = Vlasiator.prep2dslice(meta, var, :y, comp, pArgs2)
    d3 = Vlasiator.prep2dslice(meta, var, :z, comp, pArgs3)
 
-   isnothing(fig) && (fig = Figure())
+   isnothing(fig) && (fig = Figure(fontsize=22))
    ax = Axis3(fig[1,1], aspect=(1, 1, 1), elevation=pi/6, perspectiveness=0.5)
 
    ax.xlabel = "x"*unitx
@@ -165,11 +165,11 @@ function vlslices(meta::MetaVLSV, var::String; fig=nothing, axisunit::AxisUnit=S
    h3 = heatmap!(ax, x, y, d3; colormap, colorrange, transformation=(:xy, origin[3]))
 
    if addcolorbar
-      cbar = Colorbar(fig[1,2], h3, label=pArgs1.cb_title, tickalign=1)
+      cbar = Colorbar(fig[1,2], h3, label=latexstring(pArgs1.cb_title), tickalign=1)
       colgap!(fig.layout, 7)
    end
 
-   fig
+   fig, ax
 end
 
 """
@@ -186,21 +186,21 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
       throw(ArgumentError("Unable to detect population $species"))
    end
 
-   unit == EARTH && (location .*= Vlasiator.RE)
+   loc = unit == EARTH ?
+      location .* Vlasiator.RE :
+      location
 
    # Calculate cell ID from given coordinates
-   cidReq = getcell(meta, location)
-   cidNearest = getnearestcellwithvdf(meta, cidReq)
-   cellused = getcellcoordinates(meta, cidNearest)
+   cidReq = getcell(meta, loc)
+   cidNearest = getnearestcellwithvdf(meta, cidReq, species)
+   ccoords = getcellcoordinates(meta, cidNearest)
 
    if verbose
-      @info "Original coordinates : $location"
-      @info "Original cell        : $(getcellcoordinates(meta, cidReq))"
-      @info "Nearest cell with VDF: $cellused"
-      let
-         x, y, z = getcellcoordinates(meta, cidNearest)
-         @info "cellid $cidNearest, x = $x, y = $y, z = $z"
-      end
+      @info "Species             : $species"
+      @info "Original coordinates: $loc"
+      @info "Original cell       : $cidReq"
+      @info "Actual cell         : $cidNearest"
+      @info "Actual coordinates  : $ccoords"
    end
 
    vcellids, vcellf = readvcells(meta, cidNearest; species)
@@ -226,8 +226,15 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
 
    cmap = resample_cmap(:turbo, 101; alpha=(0, 1))
 
-   isnothing(fig) && (fig = Figure())
-   ax = Axis3(fig[1, 1], aspect=(1,1,1), title = "VDF at $cellused in log scale")
+   isnothing(fig) && (fig = Figure(fontsize=22))
+   if unit == SI
+      ax = Axis3(fig[1, 1], aspect=(1,1,1), title="VDF at $ccoords (m) in log scale",
+         titlesize=26)
+   elseif unit == EARTH
+      coords = round.(ccoords ./ Vlasiator.RE, digits=1) 
+      ax = Axis3(fig[1, 1], aspect=(1,1,1), title="VDF at $coords (RE) in log scale",
+         titlesize=26)
+   end
    ax.xlabel = "vx [m/s]"
    ax.ylabel = "vy [m/s]"
    ax.zlabel = "vz [m/s]"
@@ -241,7 +248,7 @@ function vdfvolume(meta::MetaVLSV, location::AbstractVector; species::String="pr
 
    fig[1, 2] = cbar
 
-   fig
+   fig, ax
 end
 
 struct LogMinorTicks end
@@ -304,5 +311,5 @@ function vdfslice(meta, location;
    ax.xlabel = strx
    ax.ylabel = stry
 
-   fig
+   fig, ax
 end

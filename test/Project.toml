@@ -1,8 +1,10 @@
 [deps]
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 LazyArtifacts = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Vlasiator = "7d2ba682-ad6e-4e20-80d9-3f2d4a610bb4"
 
 [compact]
 GLMakie = "0.4"
+Suppressor = "0.2"
