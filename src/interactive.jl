@@ -75,7 +75,7 @@ function vdfslices(meta::MetaVLSV, location::AbstractVector; fmin::AbstractFloat
 
    # Calculate cell ID from given coordinates
    cidReq = getcell(meta, location)
-   cidNearest = getnearestcellwithvdf(meta, cidReq)
+   cidNearest = getnearestcellwithvdf(meta, cidReq, species)
 
    cellused = getcellcoordinates(meta, cidNearest)
 
