@@ -1,5 +1,13 @@
 # VlasiatorMakie.jl
 
+> ⚠️ **INFO: This repository is deprecated**
+> 
+> `VlasiatorMakie` has been moved into the monorepo at [Vlasiator.jl]([https://github.com/JuliaPlots/Makie.jl](https://github.com/henry2004y/Vlasiator.jl/tree/master/ext/VlasiatorMakieExt)).
+> For Julia 1.9+, it is recommended to rely on `VlasiatorMakieExt` via
+> ```julia
+> using Vlasiator, GLMakie
+> ```
+
 [![Build Status](https://github.com/henry2004y/VlasiatorMakie.jl/workflows/CI/badge.svg)](https://github.com/henry2004y/VlasiatorMakie.jl/actions?query=workflow%3ACI+branch%3Amain)
 [![Coverage](https://codecov.io/gh/henry2004y/VlasiatorMakie.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/henry2004y/VlasiatorMakie.jl)
 
